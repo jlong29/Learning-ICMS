@@ -1,0 +1,61 @@
+% Reviewer#1 brings up the valid concern that the observed changes in ensemble
+% firing rate variability may be attributable to changes in the ensemble firing
+% rate between sessions. This is reasonable given the roughly poisson nature of
+% the data, which means the variance is equal to the meaning firing rate.
+% Therefore, an increase the unit firing rate would result in an increase
+% variance.
+close all
+set(0,'units','inches')
+scrnsz = get(0,'Screensize');
+close all
+figure('units','inches','Position',[1 scrnsz(4)*(2/3) 8.5 4]) 
+
+% basic relationship of among the statistics
+lambda = 10;
+win   = 100;
+x     = poissrnd(lambda,100*win,1);
+F     = zeros(100,1);
+u     = zeros(100,1);
+sig2  = zeros(100,1);
+
+for n = 1:length(x)/win
+    u(n)    = mean(x(1 + win*(n-1): win*n));
+    sig2(n) = var(x(1 + win*(n-1): win*n));
+    F(n)    = sig2(n)/u(n);
+end
+
+subplot(121), plot(F,'b','linewidth',2),hold on, plot(u,'r','linewidth',2),...
+    plot(sig2,'g','linewidth',2)
+line([0 length(F)],[1 1],'linestyle','--','color','k')
+line([0 length(F)],[lambda lambda],'linestyle','--','color','k')
+ylim([0 max([u;sig2;F])+.5*lambda])
+text(5,max([u;sig2;F])+.4*lambda,...
+    [{['lambda = ' num2str(lambda)]};...
+    {['win = ' num2str(win)]};...
+    {['Corr(\mu,\sigma^2) = ' num2str(corr(u,sig2))]};...
+    {['Corr(\mu,F) = ' num2str(corr(u,F))]};...
+    {['Corr(F,\sigma^2) = ' num2str(corr(F,sig2))]}],'VerticalAlignment','top')
+
+legend('Fano Factor','\mu','\sigma^2')
+
+% The basic phenomenon and how
+N      = 100;
+lambda = 20;
+x      = poissrnd(lambda,1,N);
+
+y      = x - 10;
+
+subplot(122),plot(x,'k','linewidth',2),hold on, plot(y,'linewidth',2,'color',[0.624   0.624   0.624])
+ylim([0 max([x y])+.5*lambda])
+
+F1    = var(x)/mean(x);
+F2    = var(y)/mean(y);
+
+text(5,max([x y])+.4*lambda,...
+    [{['\mu1 = ' num2str(mean(x))]};...
+     {['\sigma^2 = ' num2str(mean(y))]};...
+     {['Corr(\mu,\sigma^2) = ' num2str(corr(u,sig2))]};...
+     {['Corr(\mu,F) = ' num2str(corr(u,F))]};...
+     {['Corr(F,\sigma^2) = ' num2str(corr(F,sig2))]}],'VerticalAlignment','top')
+
+legend('data1','data2')
