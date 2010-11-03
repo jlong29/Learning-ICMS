@@ -129,27 +129,17 @@ for n = 1:length(Event011test)
     end
 end
 
-win = 40;
 % Axes 1
 axes('units','pixels','position',pos(1,:)),
-    
+    win = 10;
     temp1 = zeros(1,size(Behavior,2)-win+1);
     temp2 = zeros(1,size(Behavior,2)-win+1);
     temp3 = zeros(1,size(Behavior,2)-win+1);
-    
-    for n = 1:size(Behavior,2)-win+1
-        temp1(n) = (Behavior(1,(win-1)+n) - Behavior(1,n))/win;
-        temp2(n) = (Behavior(2,(win-1)+n) - Behavior(2,n))/win;
-        temp3(n) = (Behavior(3,(win-1)+n) - Behavior(3,n))/win;
-    end
-
-    Behavior = 100.*[temp1;temp2;temp3];
-%     Behavior = 100.*(Behavior./repmat(sum(Behavior),3,1));
+    Behavior = 100.*(Behavior./repmat(sum(Behavior),3,1));
     plot(Behavior','LineWidth',2.5)
     axis([1 size(Behavior,2) 0 100])    
     ticks = get(gca,'xtick');
     set(gca,'xtick',[1 ticks(end)])
-    set(gca,'xticklabel',[num2str(win) '|' num2str(ticks(end)+win)])
     ylabel([{'Probability'}; {'of Response'}],'Fontsize',10,'Fontname','arial')
     title('Response Profile','Fontsize',12,'Fontname','arial','fontweight','bold')
     legend('Correct (C)','False Alarm (FA)','Miss (M)','Location',[0.33 0.09 .05 .05],'orientation','vertical')
@@ -184,24 +174,11 @@ event = structpack(who('Eve*'));
 
 % Axes 3
 axes('units','pixels','position',pos(3,:)),
-    
-    temp1 = zeros(1,size(Behavior,2)-win+1);
-    temp2 = zeros(1,size(Behavior,2)-win+1);
-    temp3 = zeros(1,size(Behavior,2)-win+1);
-    
-    for n = 1:size(Behavior,2)-win+1
-        temp1(n) = (Behavior(1,(win-1)+n) - Behavior(1,n))/win;
-        temp2(n) = (Behavior(2,(win-1)+n) - Behavior(2,n))/win;
-        temp3(n) = (Behavior(3,(win-1)+n) - Behavior(3,n))/win;
-    end
-
-    Behavior = 100.*[temp1;temp2;temp3];
-%     Behavior = 100.*(Behavior./repmat(sum(Behavior),3,1));
+    Behavior = 100.*(Behavior./repmat(sum(Behavior),3,1));
     plot(Behavior','LineWidth',2.5)
     axis([1 size(Behavior,2) 0 100])
     ticks = get(gca,'xtick');
     set(gca,'xtick',[1 ticks(end)])
-    set(gca,'xticklabel',[num2str(win) '|' num2str(ticks(end)+win)])
     xlim([0 size(Behavior,2)])
     temp1 = get(gca,'children');
     temp2 = get(temp1,'color');
@@ -231,24 +208,11 @@ event = structpack(who('Eve*'));
 
 % Axes 5
 axes('units','pixels','position',pos(5,:)),
-    
-    temp1 = zeros(1,size(Behavior,2)-win+1);
-    temp2 = zeros(1,size(Behavior,2)-win+1);
-    temp3 = zeros(1,size(Behavior,2)-win+1);
-    
-    for n = 1:size(Behavior,2)-win+1
-        temp1(n) = (Behavior(1,(win-1)+n) - Behavior(1,n))/win;
-        temp2(n) = (Behavior(2,(win-1)+n) - Behavior(2,n))/win;
-        temp3(n) = (Behavior(3,(win-1)+n) - Behavior(3,n))/win;
-    end
-
-    Behavior = 100.*[temp1;temp2;temp3];    
-%     Behavior = 100.*(Behavior./repmat(sum(Behavior),3,1));
+    Behavior = 100.*(Behavior./repmat(sum(Behavior),3,1));
     plot(Behavior','LineWidth',2.5)
     axis([1 size(Behavior,2) 0 100])
     ticks = get(gca,'xtick');
     set(gca,'xtick',[1 ticks(end)])
-    set(gca,'xticklabel',[num2str(win) '|' num2str(ticks(end)+win)])
     xlim([0 size(Behavior,2)])
     temp1 = get(gca,'children');
     temp2 = get(temp1,'color');
@@ -278,25 +242,12 @@ event = structpack(who('Eve*'));
 
 % Axes 7
 axes('units','pixels','position',pos(7,:)),
-    
-    temp1 = zeros(1,size(Behavior,2)-win+1);
-    temp2 = zeros(1,size(Behavior,2)-win+1);
-    temp3 = zeros(1,size(Behavior,2)-win+1);
-    
-    for n = 1:size(Behavior,2)-win+1
-        temp1(n) = (Behavior(1,(win-1)+n) - Behavior(1,n))/win;
-        temp2(n) = (Behavior(2,(win-1)+n) - Behavior(2,n))/win;
-        temp3(n) = (Behavior(3,(win-1)+n) - Behavior(3,n))/win;
-    end
-
-    Behavior = 100.*[temp1;temp2;temp3];
-%     Behavior = 100.*(Behavior./repmat(sum(Behavior),3,1));
+    Behavior = 100.*(Behavior./repmat(sum(Behavior),3,1));
     plot(Behavior','LineWidth',2.5)
     xlabel('Trial #','Fontsize',10,'Fontname','arial')
     axis([1 size(Behavior,2) 0 100])
     ticks = get(gca,'xtick');
     set(gca,'xtick',[1 ticks(end)])
-    set(gca,'xticklabel',[num2str(win) '|' num2str(ticks(end)+win)])
     xlim([0 size(Behavior,2)])
     temp1 = get(gca,'children');
     temp2 = get(temp1,'color');

@@ -278,13 +278,18 @@ for n = 1:length(vars1)
         ylim([ymin(1) ymax(1)])
         xlim([0 2.25])
         ylabel('z-score')
-        xlabel('Distance from stimulating electrode (mm)')
+        xlabel('Distance from stimulating electrode (mm)','fontsize',8)
         axis square
         
         if n == 1
-            title('Stage1: Confused')
+            title('ICMS Signal: Stage1: Confused','fontsize',8)
+            legend('S1','S2','S3','S4','S5','location','northwest')
         elseif n == 2
-            title('Stage2: lear
+            title('ICMS Signal: Stage2: Learning','fontsize',8)
+        else
+            title('ICMS Signal: Stage3: Acquired','fontsize',8)
+        end
+        
     subplot(2,3,n+3),plot(sub1(:,3),sub1(:,2),'+k'),hold on,
         plot(sub2(:,3),sub2(:,2),'ok'),
         plot(sub3(:,3),sub3(:,2),'sk'),
@@ -304,7 +309,20 @@ for n = 1:length(vars1)
         xlim([0 2.25])
         title(['Day ' num2str(n) ': internal noise'])
         ylabel('t-value')
-        xlabel('Distance from stimulating electrode (mm)')
+        xlabel('Distance from stimulating electrode (mm)','fontsize',8)
         axis square
 
+        if n == 1
+            title('ICMS Internal Noise: Stage1: Confused','fontsize',8)
+            legend('S1','S2','S3','S4','S5','location','northwest')
+        elseif n == 2
+            title('ICMS Internal Noise: Stage2: Learning','fontsize',8)
+        else
+            title('ICMS Internal Noise: Stage3: Acquired','fontsize',8)
+        end
+        
 end
+
+set(gcf,'color','w')
+set(gcf,'PaperPositionMode','manual','PaperUnits','inches','PaperPosition',[0 0 8.5 7.6])
+

@@ -42,7 +42,7 @@ for n = 1:length(file_list1)
     date  = name(parse(1)+1:parse(2)-1);
     
     % Generate PSTHs for each unit reference to ICMS
-    [pre_stim_psth,pre_trial_psth,unitIds] = change_pre_stim_fr(file,pre,post);
+    [pre_stim_psth,pre_trial_psth,unitIds] = change_pre_stim_fr(file,500,500);
     
     pre_trial = mean(pre_trial_psth);
     pre_stim  = mean(pre_stim_psth);

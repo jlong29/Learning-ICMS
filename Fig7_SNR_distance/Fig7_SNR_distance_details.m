@@ -260,7 +260,8 @@ for n = 1:length(vars1)
     [a,b] = sort(sub5(:,3),1);
     sub5  = sub5(b,:);
     
-    subplot(2,3,n),plot(sub1(:,3),sub1(:,1),'+k'),hold on,
+    axes('units','pixels','position',pos(n,:)),
+        plot(sub1(:,3),sub1(:,1),'+k'),hold on,
         plot(sub2(:,3),sub2(:,1),'ok'),
         plot(sub3(:,3),sub3(:,1),'sk'),
         plot(sub4(:,3),sub4(:,1),'vk'),
@@ -290,7 +291,8 @@ for n = 1:length(vars1)
             title('ICMS Signal: Stage3: Acquired','fontsize',8)
         end
         
-    subplot(2,3,n+3),plot(sub1(:,3),sub1(:,2),'+k'),hold on,
+    axes('units','pixels','position',pos(n+3,:)),
+        plot(sub1(:,3),sub1(:,2),'+k'),hold on,
         plot(sub2(:,3),sub2(:,2),'ok'),
         plot(sub3(:,3),sub3(:,2),'sk'),
         plot(sub4(:,3),sub4(:,2),'vk'),
