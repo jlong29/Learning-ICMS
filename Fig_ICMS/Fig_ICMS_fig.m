@@ -184,11 +184,13 @@ for n = 1:length(all_spikes)
 
     axes('units','pixels','position',pos(2*(n-1)+2,:)),
        h = histc(isi,edge);
-       plot(edge,h,'k','linewidth',2),
-       xlim([-5 50])
+       plot(edge,h,'k','linewidth',1),
+       xlim([-5 30])
        ylim([0 max(h)+5-mod(max(h),5)+5])
-       set(gca,'xtick',[0 50],'ytick',[0 max(h)+5-mod(max(h),5)])
-       set(gca,'xticklabel','0|50')
+       line([0 0],[0 max(h)+5-mod(max(h),5)+5],'color',[0.3912 0.3990 0.350],...
+           'linestyle','--')
+       set(gca,'xtick',[0 25],'ytick',[0 max(h)+5-mod(max(h),5)])
+       set(gca,'xticklabel','0|25')
        xlabel('ISI (ms)','fontname','arial','fontsize',8)
        set(gca,'fontname','arial','fontsize',8)
        
@@ -281,4 +283,4 @@ set(findobj(gcf,'Type','axes'),'box','off')
 set(gcf,'color','w')
 set(gcf,'PaperPositionMode','manual','PaperUnits','inches','PaperPosition',[0 0 8.5 7.6])
 
-print -dpng -r600 -opengl Figure_ICMS
+% print -dpng -r600 -opengl Figure_ICMS

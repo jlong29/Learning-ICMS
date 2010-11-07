@@ -31,7 +31,7 @@ for n = 1:length(subjects)
     K = length(file_Acc);
     
     % Generate figure canvas
-    figure('units','pixels','Position',[1*dpi 2*dpi 8.5*dpi 11*dpi])
+    figure('units','pixels','Position',[1 2 8.5 11].*dpi)
 
     % From top to bottom
     V = 1.75*(K-1)*dpi+0.5*dpi:-1.75*dpi:0.5*dpi;
@@ -53,7 +53,7 @@ for n = 1:length(subjects)
         
         % Convert data
         data_matrix
-        n
+
         % pack base workspace Events for function
         event = structpack(who('Eve*'));
         clear Eve*
@@ -64,12 +64,14 @@ for n = 1:length(subjects)
         clear event stim*
 
         % Process the accelerometer data as the sum of the absolute values of each
-        % channels derivative.
-        %z-score lfp
-        lfp    = (lfp-repmat(mean(lfp,2),1,size(lfp,2)))./repmat(std(lfp,[],2),1,size(lfp,2));
+        % channels numerical derivative.
         Nchan = size(lfp,1);
         acc   = abs(diff(lfp,[],2));
         acc   = sum(acc)./Nchan;
+        
+        %z-score acc
+        acc   = (acc - mean(acc))/std(acc);
+        
         clear lfp
 
         handles    = zeros(length(Behaviors),1);
@@ -94,7 +96,9 @@ for n = 1:length(subjects)
                     for i = 1:length(Event)
                         ind  = find(time_line < Event(i),1,'last');
                         try
-                            dacc(i,:) = acc(1,ind-win:ind+win);
+                            temp      =  acc(1,ind-win:ind+win);
+                            % set to zero mean
+                            dacc(i,:) = temp - mean(temp);
                         catch
                             if (ind + win) >length(acc)
                                 temp = acc(1,ind-win:end);
@@ -126,12 +130,12 @@ for n = 1:length(subjects)
             
             % Set title
             if q == 1
-                title(labels{p},'fontname','cambria','fontsize',10)
+                title(labels{p},'fontname','arial','fontsize',10)
             end
             
             % Set ylabel
             if q == K
-                xlabel('Time (sec)','fontname','cambria','fontsize',10)
+                xlabel('Time (sec)','fontname','arial','fontsize',10)
             end
             
             % Set accelerometer limits to that of start trial mean+/-error
@@ -154,11 +158,11 @@ for n = 1:length(subjects)
         if q == 1
             eval([file '_m   = dacc_allm;'])
             eval([file '_std = dacc_allse;'])
-            eval(['save(''' subjects{n} '_Acc_peth'',''' file '_m'',''' file '_std'')'])
+            eval(['save(''' subjects{n} '_Acc_peth2'',''' file '_m'',''' file '_std'')'])
         else
             eval([file '_m   = dacc_allm;'])
             eval([file '_std = dacc_allse;'])
-            eval(['save(''' subjects{n} '_Acc_peth'',''' file '_m'',''' file '_std'',''-append'')'])
+            eval(['save(''' subjects{n} '_Acc_peth2'',''' file '_m'',''' file '_std'',''-append'')'])
         end
 
         % Adjust y-axis limits for each row
@@ -179,6 +183,8 @@ for n = 1:length(subjects)
     set(gcf,'color','w')
 
     set(gcf,'PaperPositionMode','manual','PaperUnits','inches','PaperPosition',[0 0 8.5 11])
-    eval(['print(''-dpng'',''-r600'',''' subjects{n} '_Acc_peth'')'])
+    eval(['print(''-dpng'',''-r600'',''' subjects{n} '_Acc_peth2'')'])
     close all
 end
+
+system('%windir%\system32\rundll32.exe PowrProf.dll, SetSuspendState')

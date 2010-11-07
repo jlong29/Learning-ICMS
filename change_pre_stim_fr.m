@@ -1,22 +1,25 @@
-function [pre_stim_psth,pre_trial_psth,unitIds] = change_pre_stim_fr(file,win)
-
-% Requirements: this code requires the m-file 'data_matrix' to be in your
+function [pd_base,pd_stim,unitIds] = change_pre_stim_fr(file,win)
+% Requirements: this code requires the m-file 'data_matrix' is in your
 % path in order to run.
 %
 % Intent: To evaluate whether the pre-stimulus firing rates of the units changes
 % prior to ICMS as the subjects learned the task. I'll compare the firing rates
 % of the units at the trial start to the pre-stimulus period
-
+%
 % Inputs: 
-% file  = a string providing the file of interest's name.
-% bin   = bin in milliseconds
-% win   = an integer number of ms prior to each event
+% file  : a string providing the file of interest's name.
+% win   : an integer number of samples
+%
+% Outputs:
+% pd_base : paired difference between the 2 start trial counts
+% pd_stim : paired difference between the 1st start trial counts and the pre
+% stim count
 
 if nargin < 1
     error('There must be at least one input: a string indicating a .mat file.')
 end
 
-if nargin < 3
+if nargin < 2
     win  = 1000;
 end
 
@@ -35,7 +38,7 @@ if ~exist('Event015','var')
     error('The file does not contain the variable "Event015"')
 end
 
-% Register test event
+% Register stimulus event
 event1 = Event015;
 
 %%% Event011: Start trial event use for baseline %%%
@@ -53,21 +56,21 @@ for n=2:length(Event011)
     end
 end
 
-% Reigster baseline event
+% Register start trial events
 event2 = Event011(logical(ind));
 
 % Grab Unit names
 unitIds = who('sig*');
 
-% Convert to timestamps to data matrix
+% Convert timestamps to data matrix
 % use data matrix to generate spikes
 data_matrix
+
 num_units = size(spikes,2);
 
-%%% Generate PETH in response to nose poke %%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Find indices of event
-epoch_ind = zeros(length(event1),1);
+%%% Find Indices of Stimulus events %%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+epoch_ind1 = zeros(length(event1),1);
 ind       = 0;
 
 % Copy of time_line for speed up
@@ -76,50 +79,46 @@ time      = time_line;
 for n = 1:length(event1)
     
     temp         = find(time>event1(n),1,'first');
-    epoch_ind(n) = ind + temp;
+    epoch_ind1(n) = ind + temp;
     
     time         = time(temp+1:end);
-    ind          = epoch_ind(n);
+    ind          = epoch_ind1(n);
 end
 
 % Correct for terminal edge
-if epoch_ind(end) + win/2 - 1 > size(spikes,1)
+if epoch_ind1(end) + win/2 - 1 > size(spikes,1)
     % Toss trial out
-    epoch_ind = epoch_ind(1:end-1);
+    epoch_ind1 = epoch_ind1(1:end-1);
 end
 
-% Generate peri-event response histogram for each unit    
-% Grab Peri-Event Data
-event_data = zeros(win,num_units,'uint16');
-for q = 1:length(epoch_ind)
-    event_data = event_data + uint16(spikes(epoch_ind(q)-win+1:epoch_ind(q),:));
-end
-
-% Convert average to spikes/second
-pre_stim_psth   = 1000*single(event_data)./length(epoch_ind);
-
-%%% Generate baseline unit firing rates %%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Find indices of event
-epoch_ind = zeros(length(event2),1);
+%%% Find Indices of Start Trial Events %%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+epoch_ind2 = zeros(length(event2),1);
 ind       = 0;
 
 for n = 1:length(event2)
-    
     temp = find(time_line>event2(n),1,'first');
-    epoch_ind(n) = ind + temp;
+    epoch_ind2(n) = ind + temp;
     
     time_line  = time_line(temp+1:end);
-    ind        = epoch_ind(n);
+    ind        = epoch_ind2(n);
 end
 
-% Generate pre-trial PETH histograms for each unit    
-% Grab Peri-Event Data
-event_data = zeros(win,num_units,'uint16');
-for q = 1:length(epoch_ind)
-    event_data = event_data + uint16(spikes(epoch_ind(q)-win/2:epoch_ind(q)+win/2-1,:));
+% Generate peri-event response histogram for each unit    
+% Peri-Event Data
+pd_stim = zeros(length(epoch_ind1),num_units);
+pd_base = zeros(length(epoch_ind1),num_units);
+
+for q = 1:length(epoch_ind1)
+    % Find corresponding start trial index
+    start_trial = epoch_ind2(find(epoch_ind2 < epoch_ind1(q),1,'last'));
+    
+    % log poisson count data and convert to spikes/sec
+    stim        = (1000/win).*sum(spikes(epoch_ind1(q)-win+1:epoch_ind1(q),:));
+    base1       = (1000/win).*sum(spikes(start_trial-win+1:start_trial,:));
+    base2       = (1000/win).*sum(spikes(start_trial+1:start_trial+win,:));
+    
+    % Register paired differences
+    pd_stim(q,:)  = stim - base1;
+    pd_base(q,:)  = base2 - base1;
 end
-
-% Convert average to spikes/second
-pre_trial_psth = 1000*single(event_data)./length(epoch_ind);
-

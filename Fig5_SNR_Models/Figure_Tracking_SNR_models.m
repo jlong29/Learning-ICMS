@@ -64,7 +64,7 @@ for p = 1:size(pos,1)/3
         axes('units','pixels','position',pos(axs1(p),:)),
         bar(means{p},'edge','k','facecolor',[0.3912 0.3990 0.350],'barwidth',1)
         line([1:metric;1:metric],[means{p}-ses{p};means{p}+ses{p}],'color','k','linewidth',2)
-        ylabel([{'SNR Model:'};{'ICMS Signal'}],'fontsize',10,'fontname','arial')
+        ylabel([{'SNR Model:'};{'ICMS Signal'};{'z-score'}],'fontsize',10,'fontname','arial')
         title(['Subject ' num2str(p)],'fontweight','bold','fontname','arial')
         set(gca,'xtick',[1 length(means{p})])
         set(gca,'xticklabel',{'1';num2str(metric)})
@@ -94,7 +94,7 @@ for p = 1:size(pos,1)/3
         line([1:metric;1:metric],[meansC{p}-sesC{p};meansC{p}+sesC{p}],'color','k','linewidth',2)
         set(gca,'xtick',[1 length(means{p})])
         set(gca,'xticklabel',{'1';num2str(metric)})
-        ylabel([{'SNR Model:'};{'Internal Noise'}],'fontsize',10,'fontname','arial')
+        ylabel([{'SNR Model:'};{'Internal Noise'};{'t-value'}],'fontsize',10,'fontname','arial')
         axis tight
         temp = get(gca,'ylim');
         ylim([0 temp(2)])

@@ -319,3 +319,4 @@ axes('units','pixels','position',pos(8,:)),
 set(findobj(gcf,'Type','axes'),'Fontname','arial')
 set(findobj(gcf,'Type','axes'),'box','off')
 set(gcf,'color','w')
+set(gcf,'PaperPositionMode','manual','PaperUnits','inches','PaperPosition',[0 0 8.5 11])
